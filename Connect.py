@@ -3,12 +3,10 @@ import paramiko
 import datetime
 import os
 
-# Base class for command execution
 class CommandExecutor:
     def execute(self, command):
         raise NotImplementedError("Subclasses must implement execute() method")
 
-# Concrete class for executing commands via SSH
 class SSHCommandExecutor(CommandExecutor):
     def __init__(self, hostname, username, password):
         self.hostname = hostname
@@ -16,7 +14,6 @@ class SSHCommandExecutor(CommandExecutor):
         self.password = password
 
     def execute(self, command):
-        # Implement SSH command execution logic using paramiko or any SSH library
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(self.hostname, username=self.username, password=self.password)
@@ -26,10 +23,8 @@ class SSHCommandExecutor(CommandExecutor):
 
         return output
 
-# Factory Method pattern to create CommandExecutor instances dynamically
 class CommandExecutorFactory:
     def create_executor(self):
-        # Read hostname, username, and password from the "pass.txt" file
         desktop_path = os.path.expanduser("~/Desktop")
         logs_folder = os.path.join(desktop_path, "logs")
         pass_file = os.path.join(logs_folder, "pass.txt")
@@ -44,7 +39,6 @@ class CommandExecutorFactory:
 
         return SSHCommandExecutor(hostname, username, password)
 
-# Function to save command and its output to a text file without overwriting existing content
 def save_to_file(command, output, filename):
     desktop_path = os.path.expanduser("~/Desktop")
     logs_folder = os.path.join(desktop_path, "logs")
@@ -55,7 +49,6 @@ def save_to_file(command, output, filename):
         file.write(f"Output: {output}\n")
         file.write(f"Date and Time: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
 
-# Create pass.txt file for user to edit
 def create_pass_file():
     desktop_path = os.path.expanduser("~/Desktop")
     logs_folder = os.path.join(desktop_path, "logs")
@@ -71,7 +64,6 @@ def create_pass_file():
 
     print("pass.txt file created in the logs folder on the desktop. Please edit the file with the correct information.")
 
-# CLI interface for choosing the command to run
 if __name__ == "__main__":
     try:
         factory = CommandExecutorFactory()
